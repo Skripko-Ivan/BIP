@@ -1,0 +1,44 @@
+version: "3.3"
+
+services:
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    depends_on:
+      - keycloak
+    environment:
+      # Важно: используйте ваш локальный IP-адрес, localhost может работать некорректно
+      # Вместо 127.0.0.1 возьмите адрес в вашей локальной сети (напр. 192.168.11.156)
+      KEYCLOAK_URL: "http://192.168.21.129:8090"
+      REDIRECT_URL: "http://192.168.21.129:8080/auth/callback"
+      REALM: "Realm"
+      CLIENT_ID: "Client"
+      CLIENT_SECRET_KEY: "Hsj5YiQPCGH6JLPfQRSJPHA0h04uPCux"
+    volumes:
+      - /home/user/keycloak_stub/backend:/app
+
+
+  nginx_frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:20.0.1
+    restart: always
+    command: start-dev
+    ports:
+      - "8090:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - data:/opt/keycloak/data/
+
+volumes:
+  data:

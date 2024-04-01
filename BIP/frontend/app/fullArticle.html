@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Полный текст статьи</title>
+    <link rel="stylesheet" href="static/bootstrap-5.3.2-dist/css/bootstrap.css">
+    <style>
+        /* Добавляем перенос слов */
+        .form-control {
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Мой блог</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="mb-3">
+            <label for="title" class="form-label">Заголовок</label>
+            <div type="text" class="form-control" id="article-title" name="title">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Текст статьи</label>
+            <div contenteditable="true" class="form-control" id="article-text" name="description"></div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">Мой блог &copy; 2024</span>
+        </div>
+    </footer>
+
+</body>
+<script src="static/bootstrap-5.3.2-dist/js/jquery3.7.1.js"></script>
+<script src="static/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Получаем данные о статьи из URL
+    var urlParams = new URLSearchParams(window.location.search);
+    var articleTitle = urlParams.get('title');
+
+    // Устанавливаем заголовок статьи
+    $("#article-title").text(articleTitle);
+
+    // Отправляем AJAX-запрос на сервер для получения содержимого статьи
+    $.ajax({
+        url: '/article/description', // Указываем URL, куда отправляем запрос
+        type: 'GET', // Тип запроса - GET
+        data: {title: articleTitle}, // Передаем параметр title со значением articleTitle
+        success: function(response) {
+            var description = response[0].description;
+            $("#article-text").html(description);
+        },
+        error: function(xhr, status, error) {
+            // Если произошла ошибка при выполнении запроса, выводим сообщение об ошибке
+            console.error('Ошибка при получении содержимого статьи:', error);
+        }
+    });
+});
+</script>
+</html>
