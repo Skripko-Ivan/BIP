@@ -1,25 +1,7 @@
-version: "3.3"
-
+version: '3.7'
 services:
-  nginx_frontend:
+  otp_example:
     build:
-      context: frontend
-      dockerfile: Dockerfile
+      context: .
     ports:
-      - "8080:80"
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:20.0.1
-    restart: always
-    command: start-dev
-    ports:
-      - "8090:8080"
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KEYCLOAK_BIND: "0.0.0.0"
-    volumes:
-      - data:/opt/keycloak/data/
-
-volumes:
-  data:
+    - '8080:80'
